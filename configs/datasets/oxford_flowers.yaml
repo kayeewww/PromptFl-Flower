@@ -1,0 +1,23 @@
+DATASET:
+  NAME: "oxford_flowers"
+  ROOT: "./data"
+  NUM_SHOTS: 16
+  USERS: 5
+  IID: False
+  USEALL: False
+  REPEATRATE: 0.0
+
+DATALOADER:
+  NUM_WORKERS: 0
+  TRAIN_X:
+    BATCH_SIZE: 32
+  TEST:
+    BATCH_SIZE: 100
+
+MODEL:
+  BACKBONE:
+    NAME: "ViT-B/16"
+    PRETRAINED: True
+
+INPUT:
+  SIZE: [224, 224]

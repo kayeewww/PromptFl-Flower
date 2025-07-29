@@ -1,0 +1,134 @@
+# Docker Compose for PromptFL with Flower - Complete Version
+# 基于当前完整版本的Docker部署
+
+services:
+  server:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.flower
+    container_name: promptfl-flower-server
+    hostname: promptfl-flower-server
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../data:/app/data
+      - ../output:/app/output
+      - ../configs:/app/configs
+      - ./logs:/app/logs
+    environment:
+      - ROLE=server
+      - PYTHONPATH=/app
+      - TF_CPP_MIN_LOG_LEVEL=3
+      - CUDA_VISIBLE_DEVICES=""
+      - FLWR_TELEMETRY_ENABLED=0
+    networks:
+      - promptfl-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; s=socket.socket(); s.settimeout(1); s.connect(('localhost', 8080)); s.close()"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    command: >
+      python docker/server_flower.py
+      --host 0.0.0.0 
+      --port 8080 
+      --rounds 10 
+      --min-clients 2
+      --trainer PromptFL
+      --dataset cifar10
+      --backbone ViT-B/16
+      --n-ctx 16
+      --num-clients 2
+      --local-epochs 5
+      --batch-size 32
+
+  client1:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.flower
+    container_name: promptfl-flower-client1
+    hostname: promptfl-flower-client1
+    volumes:
+      - ../data:/app/data
+      - ../output:/app/output
+      - ../configs:/app/configs
+      - ./logs:/app/logs
+    environment:
+      - ROLE=client
+      - CLIENT_ID=0
+      - PYTHONPATH=/app
+      - TF_CPP_MIN_LOG_LEVEL=3
+      - CUDA_VISIBLE_DEVICES=""
+      - FLWR_TELEMETRY_ENABLED=0
+    depends_on:
+      server:
+        condition: service_healthy
+    networks:
+      - promptfl-network
+    restart: unless-stopped
+    command: >
+      python docker/client_flower.py 
+      --server-address server:8080 
+      --client-id 0
+      --trainer PromptFL
+      --dataset cifar10
+      --backbone ViT-B/16
+      --n-ctx 16
+      --num-clients 2
+      --local-epochs 5
+      --batch-size 32
+
+  client2:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.flower
+    container_name: promptfl-flower-client2
+    hostname: promptfl-flower-client2
+    volumes:
+      - ../data:/app/data
+      - ../output:/app/output
+      - ../configs:/app/configs
+      - ./logs:/app/logs
+    environment:
+      - ROLE=client
+      - CLIENT_ID=1
+      - PYTHONPATH=/app
+      - TF_CPP_MIN_LOG_LEVEL=3
+      - CUDA_VISIBLE_DEVICES=""
+      - FLWR_TELEMETRY_ENABLED=0
+    depends_on:
+      server:
+        condition: service_healthy
+    networks:
+      - promptfl-network
+    restart: unless-stopped
+    command: >
+      python docker/client_flower.py 
+      --server-address server:8080 
+      --client-id 1
+      --trainer PromptFL
+      --dataset cifar10
+      --backbone ViT-B/16
+      --n-ctx 16
+      --num-clients 2
+      --local-epochs 5
+      --batch-size 32
+
+networks:
+  promptfl-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16
+
+volumes:
+  data:
+    driver: local
+  output:
+    driver: local
+  configs:
+    driver: local
+  logs:
+    driver: local

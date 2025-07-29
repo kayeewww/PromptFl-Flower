@@ -1,0 +1,15 @@
+TRAINER:
+  NAME: "PromptFL"
+  PROMPTFL:
+    N_CTX: 16
+    CSC: False
+    CTX_INIT: ""
+    PREC: "fp16"
+    CLASS_TOKEN_POSITION: "end"
+
+OPTIM:
+  NAME: "adam"
+  LR: 0.002
+  WEIGHT_DECAY: 0.0
+  MAX_EPOCH: 5
+  ROUND: 10

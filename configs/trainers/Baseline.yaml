@@ -1,0 +1,11 @@
+TRAINER:
+  NAME: "Baseline"
+  BASELINE:
+    PREC: "fp32"
+
+OPTIM:
+  NAME: "adam"
+  LR: 0.0001  # Lower learning rate for full model fine-tuning
+  WEIGHT_DECAY: 0.01
+  MAX_EPOCH: 3  # Fewer epochs for full model training
+  ROUND: 10

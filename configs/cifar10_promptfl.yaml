@@ -1,0 +1,38 @@
+DATASET:
+  NAME: "cifar10"
+  ROOT: "./data"
+  USERS: 5
+  IID: False
+  USEALL: True
+
+DATALOADER:
+  NUM_WORKERS: 0
+  TRAIN_X:
+    BATCH_SIZE: 32
+  TEST:
+    BATCH_SIZE: 100
+
+MODEL:
+  BACKBONE:
+    NAME: "ViT-B/16"
+    PRETRAINED: True
+
+TRAINER:
+  NAME: "PromptFL"
+  PROMPTFL:
+    N_CTX: 16
+    CSC: False
+    CTX_INIT: ""
+    PREC: "fp16"
+    CLASS_TOKEN_POSITION: "end"
+
+OPTIM:
+  NAME: "adam"
+  LR: 0.002
+  WEIGHT_DECAY: 0.0
+  MAX_EPOCH: 5
+  ROUND: 10
+
+OUTPUT_DIR: "./output/cifar10_promptfl"
+SEED: 42
+USE_CUDA: False

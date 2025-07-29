@@ -1,0 +1,34 @@
+# PromptFL with Flower - Docker Requirements
+# 基于之前成功的配置
+
+# PyTorch (CPU version for compatibility)
+torch>=1.12.0,<2.0.0
+torchvision>=0.13.0,<0.16.0
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+# Flower federated learning (compatible version)
+flwr==1.3.0
+
+# Data processing
+numpy>=1.21.0,<1.25.0
+Pillow>=8.0.0,<10.0.0
+pandas>=1.3.0,<2.0.0
+
+# Configuration management
+pyyaml>=6.0
+yacs>=0.1.8
+
+# Logging and utilities
+rich>=10.0.0
+coloredlogs>=15.0
+
+# Visualization
+matplotlib>=3.5.0
+
+# CLIP dependencies
+ftfy>=6.1.1
+regex>=2022.7.9
+tqdm>=4.64.0
+
+# Python 3.9 compatibility
+typing-extensions>=4.0.0
